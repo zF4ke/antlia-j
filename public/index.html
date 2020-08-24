@@ -3,14 +3,70 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Antlia</title>
+        <title>Antlia-J</title>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
+            @media (min-width: 0px) {
+                #screen {
+                    width: 100px;
+                    height: 100px;
+                }
+            }
+            @media (min-width: 900px) {
+                #screen {
+                    width: 250px;
+                    height: 250px;
+                }
+            }
+            @media (min-width: 1200px) {
+                #screen {
+                    width: 350px;
+                    height: 350px;
+                }
+            }
+            @media (min-width: 1400px) {
+                #screen {
+                    width: 400px;
+                    height: 400px;
+                }
+            }
             body {
                 background: #f8f8f8;
                 transition: background 0.3s;
             }
+            .title {
+                position: fixed;
+                color: rgb(46, 46, 46);
+                font-family: 'Alata', sans-serif;
+                margin: 0;
+                margin-left: 20px;
+                font-size: 40px;
+            }
+            .err-title {
+                color: rgb(199, 70, 70);
+                font-family: 'Alata', sans-serif;
+                margin: 0;
+                margin-left: 20px;
+                font-size: 40px;
+            }
+            .err-p {
+                color:rgb(190, 190, 190);
+                font-family: 'Alata', sans-serif;
+                margin-left: 20px;
+                font-size: 20px;
+            }
+            .subtitle {
+                position: fixed;
+                color: rgb(46, 46, 46);
+                font-family: 'Alata', sans-serif;
+                margin: 0;
+                margin-top: 50px;
+                margin-left: 20px;
+                font-size: 10px;
+            }
             .game {
+                margin-top: 50px;
                 display: flex;
                 justify-content: center;
             }
@@ -24,7 +80,7 @@
                 margin-left: 20px;
                 font-family: 'Open Sans', sans-serif;
             }
-            #screen { 
+            #screen {
                 background: #f1f1f1;
                 border: 3px solid rgb(190, 190, 190);
                 transition: background 0.3s;
@@ -32,8 +88,6 @@
                 image-rendering: pixelated;
                 image-rendering: crisp-edges;
                 image-rendering: -moz-crisp-edges;
-                width: 400px;
-                height: 400px;
                 box-shadow: 0px 0px 10px rgb(185, 185, 185);
 
             }
@@ -42,6 +96,8 @@
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
+        <p class="title">Antlia</p>
+        <p class="subtitle">zF4ke#8556</p>
         <div class="game">
             <canvas id="screen"></canvas>
             <table id="ranking">
@@ -63,6 +119,19 @@
             <img id="change-icon" src="./darkmode.png" width="60">
         </a>
         <script type="module">
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                let body = document.getElementsByTagName("BODY")[0]
+                body.innerHTML = `<h1 class="err-title">Me desculpe mas este site não funciona para dispositivos moveis.</h1>
+                                    <p class="err-p">Entendi, nos vemos na proxima então!</p>`
+                body.style.background = '#161616'
+
+                function javascript_abort()
+                {
+                    throw new Error('This is not an error. This is just to abort javascript');
+                }
+                javascript_abort()
+            }
+            
             import createGame from './game.js'
             import createKeyboardListener from './keyboard-listener.js'
             import renderScreen from './render-screen.js'
@@ -109,18 +178,34 @@
                 game.removeFruit(command)
             })
 
+            var colorMode = 'dark'
             const changemode = document.getElementById('changemode')
             const body = document.getElementsByTagName("BODY")[0]
             const screen = document.getElementById('screen')
             const ranking = document.getElementById('ranking')
             
+            changemode.ondblclick = () => {
+                socket.emit('login', session)
+            }
+
             changemode.onclick = () => {
+                if(colorMode === 'dark') {
                 body.style.background = '#161616'
                 screen.style.background = '#2f312e'
                 screen.style.border = '3px solid #363636'
                 screen.style.boxShadow = '0px 0px 10px rgb(41, 41, 41)'
                 ranking.style.color = 'white'
-                document.getElementById('change-icon').src = 'whitemode.png'
+
+                colorMode = 'white'
+                } else {
+                    body.style.background = '#f8f8f8'
+                    screen.style.background = '#f1f1f1'
+                    screen.style.border = '3px solid rgb(190, 190, 190)'
+                    screen.style.boxShadow = '0px 0px 10px rgb(185, 185, 185)'
+                    ranking.style.color = 'black'
+
+                    colorMode = 'dark'
+                }
             }
         </script>
     </body>

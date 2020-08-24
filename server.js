@@ -12,12 +12,12 @@ app.use(express.static('public'))
 const game = createGame()
 
 game.subscribe((command) => {
-    console.log(`> Emitting ${command.type}`)
+    //console.log(`> Emitting ${command.type}`)
     sockets.emit(command.type, command)
 })
 
 function start() {
-    const frequency = 15000
+    const frequency = 7000
 
     setInterval(game.addFruit, frequency)
 }
@@ -41,6 +41,12 @@ sockets.on('connection', (socket) => {
         command.type = 'move-player'
 
         game.movePlayer(command)
+    })
+
+    socket.on('login', (session) => {
+        if(session.user === "admin" && session.password === "admin") {
+            console.log('logged with admin')
+        }
     })
 })
 
