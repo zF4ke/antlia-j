@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Antlia</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+            body {
+                background: #f8f8f8;
+                transition: background 0.3s;
+            }
+            .game {
+                display: flex;
+                justify-content: center;
+            }
+            #changemode {
+                position: fixed;
+                bottom: -4px;
+                left: 2px;
+                cursor: pointer;
+            }
+            #ranking {
+                margin-left: 20px;
+                font-family: 'Open Sans', sans-serif;
+            }
+            #screen { 
+                background: #f1f1f1;
+                border: 3px solid rgb(190, 190, 190);
+                transition: background 0.3s;
+                transition: border 0.3s;
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
+                image-rendering: -moz-crisp-edges;
+                width: 400px;
+                height: 400px;
+                box-shadow: 0px 0px 10px rgb(185, 185, 185);
+
+            }
+        </style>
+        <link rel="shortcut icon" href="./antlia.ico" type="image/x-icon">
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <div class="game">
+            <canvas id="screen"></canvas>
+            <table id="ranking">
+                <thead>
+                    <tr>
+                        <th>Melhores Jogadores&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th>Pontos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a id="changemode">
+            <img id="change-icon" src="./darkmode.png" width="60">
+        </a>
+        <script type="module">
+            import createGame from './game.js'
+            import createKeyboardListener from './keyboard-listener.js'
+            import renderScreen from './render-screen.js'
+
+            const game = createGame()
+
+            const keyboardListener = createKeyboardListener(document)
+            const socket = io()
+            
+            socket.on('connect', () => {
+                const playerId = socket.id
+                console.log(`Player connected on Client with id: ${playerId}`)
+            })
+
+            socket.on('setup', (state) => {
+                const playerId = socket.id
+                game.setState(state)
+                const screen = document.getElementById('screen')
+                renderScreen(screen, game, requestAnimationFrame, playerId, state.screen)
+
+                keyboardListener.registerPlayerId(playerId)
+                keyboardListener.subscribe(game.movePlayer)
+                keyboardListener.subscribe((command) => {
+                    socket.emit('move-player', command)
+                })
+            })
+
+            socket.on('add-player', (command) => {
+                game.addPlayer(command)
+            })
+            socket.on('remove-player', (command) => {
+                game.removePlayer(command)
+            })
+            socket.on('move-player', (command) => {
+                const playerId = socket.id
+                if(playerId !== command.playerId) {
+                    game.movePlayer(command)
+                }
+            })
+            socket.on('add-fruit', (command) => {
+                game.addFruit(command)
+            })
+            socket.on('remove-fruit', (command) => {
+                game.removeFruit(command)
+            })
+
+            const changemode = document.getElementById('changemode')
+            const body = document.getElementsByTagName("BODY")[0]
+            const screen = document.getElementById('screen')
+            const ranking = document.getElementById('ranking')
+            
+            changemode.onclick = () => {
+                body.style.background = '#161616'
+                screen.style.background = '#2f312e'
+                screen.style.border = '3px solid #363636'
+                screen.style.boxShadow = '0px 0px 10px rgb(41, 41, 41)'
+                ranking.style.color = 'white'
+                document.getElementById('change-icon').src = 'whitemode.png'
+            }
+        </script>
+    </body>
+</html>
