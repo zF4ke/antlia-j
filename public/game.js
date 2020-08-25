@@ -38,14 +38,16 @@ export default function createGame() {
 
         state.players[playerId] = {
             x: playerX,
-            y: playerY
+            y: playerY,
+            score: 0
         }
 
         notifyAll({
             type: 'add-player',
             playerId: playerId,
             playerX: playerX,
-            playerY: playerY
+            playerY: playerY,
+            score: 0
         })
     }
 
@@ -139,9 +141,8 @@ export default function createGame() {
             const fruit = state.fruits[fruitId]
 
             if(player.x === fruit.x && player.y === fruit.y) {
-                console.log(`COLLISION between ${playerId} and ${fruitId}`)
-
                 removeFruit({ fruitId:fruitId })
+                player.score += 1
             }
         }
     }

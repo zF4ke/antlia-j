@@ -76,7 +76,7 @@
                 left: 2px;
                 cursor: pointer;
             }
-            #ranking {
+            #score-table {
                 margin-left: 20px;
                 font-family: 'Open Sans', sans-serif;
             }
@@ -100,19 +100,7 @@
         <p class="subtitle">zF4ke#8556</p>
         <div class="game">
             <canvas id="screen"></canvas>
-            <table id="ranking">
-                <thead>
-                    <tr>
-                        <th>Melhores Jogadores&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                        <th>Pontos</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Name</td>
-                        <td>0</td>
-                    </tr>
-                </tbody>
+            <table id="score-table">
             </table>
         </div>
         <a id="changemode">
@@ -134,7 +122,7 @@
             
             import createGame from './game.js'
             import createKeyboardListener from './keyboard-listener.js'
-            import renderScreen from './render-screen.js'
+            import renderScreen, { setupScreen } from './render-screen.js'
 
             const game = createGame()
 
@@ -143,14 +131,25 @@
             
             socket.on('connect', () => {
                 const playerId = socket.id
+                const scoreTable = document.getElementById('score-table')
+                const screen = document.getElementById('screen')
+
                 console.log(`Player connected on Client with id: ${playerId}`)
+
+                setupScreen(screen, game)
+                renderScreen(screen, scoreTable, game, requestAnimationFrame, playerId)
+
+            })
+
+            socket.on('disconnect', () => {
+                console.log('Unsubscribing All')
+                keyboardListener.unsubscribeAll();
             })
 
             socket.on('setup', (state) => {
                 const playerId = socket.id
+
                 game.setState(state)
-                const screen = document.getElementById('screen')
-                renderScreen(screen, game, requestAnimationFrame, playerId, state.screen)
 
                 keyboardListener.registerPlayerId(playerId)
                 keyboardListener.subscribe(game.movePlayer)
