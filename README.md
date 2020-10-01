@@ -13,8 +13,7 @@
   <h3 align="center">Antlia-J</h3>
 
 
-<p>Criei um jogo simples baseado no "meu-primeiro-jogo-multiplayer" do Felipe Deschamps par</p>a estudar 
-e aprender mais sobre a interação de javascript do backend com o frontend.</p>
+<p>Criei um jogo simples baseado no "meu-primeiro-jogo-multiplayer" do Felipe Deschamps para estudar e aprender mais sobre a interação de javascript do backend com o frontend.</p>
 
 ## Contacto
 
