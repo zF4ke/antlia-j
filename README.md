@@ -13,13 +13,13 @@
   <h3 align="center">Antlia-J</h3>
 
 
-<p>Criei um jogo simples baseado no "meu-primeiro-jogo-multiplayer" do Felipe Deschamps para estudar e aprender mais sobre a interação de javascript do backend com o frontend.</p>
+<p align="center">Criei um jogo simples baseado no "meu-primeiro-jogo-multiplayer" do Felipe Deschamps para estudar e aprender mais sobre a interação de javascript do backend com o frontend.</p>
 
 ## Contacto
 
-zF4ke - Discord zF4ke#8556 - pedrohsilva955gmail.com
-
-Link do Projeto: [https://github.com/zF4ke/antlia-j](https://github.com/zF4ke/antlia-j)
+Discord: zF4ke#8556
+<br>
+Email: pedrohsilva955gmail.com
 
 ## Licença
 
